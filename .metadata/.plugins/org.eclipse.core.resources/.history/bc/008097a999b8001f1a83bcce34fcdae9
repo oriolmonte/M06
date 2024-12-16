@@ -1,0 +1,11 @@
+package model;
+
+public class Player {
+	
+	String team_abv;
+	int player_id;
+	String name;
+	
+		
+
+}

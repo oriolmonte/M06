@@ -1,0 +1,146 @@
+package dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import model.Team;
+
+public class TeamHibernateImpl implements DaoManager {
+
+	EntityManagerFactory factory = Persistence.createEntityManagerFactory("ORMTeam");
+	EntityManager entityManager = factory.createEntityManager();
+	
+	@Override
+	public boolean AddTeam(Team oneTeam) {
+		EntityTransaction t = entityManager.getTransaction();
+		try {
+			t.begin();
+			entityManager.persist(oneTeam);	
+			t.commit();	
+			close();
+			return true;
+		}
+		catch(Exception e)
+		{
+			t.rollback();
+			
+			return false;
+		}
+	}
+
+	@Override
+	public boolean DeleteTeam(String teamAbbr) {
+		EntityTransaction t = entityManager.getTransaction();
+		try {
+			t.begin();
+			Team team = getTeamByAbbr(teamAbbr);
+			entityManager.remove(team);
+			t.commit();
+			close();
+			return true;
+		}
+		catch(Exception e)
+		{
+			t.rollback();
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public Team updateTeam(Team oneTeam) {
+		EntityTransaction t = entityManager.getTransaction();
+		try {
+			t.begin();
+			Team fromDb = getTeamByAbbr(oneTeam.getAbv());
+			fromDb.setAbv(oneTeam.getAbv());
+			fromDb.setLogo_link(oneTeam.getLogo_link());
+			fromDb.setName(oneTeam.getName());
+			close();
+			t.commit();
+			
+		}
+		catch(Exception e)
+		{
+			t.rollback();
+			e.printStackTrace();
+			
+		}
+		return null;
+	}
+
+	@Override
+	public Team getTeamByAbbr(String teamAbbr) {
+		EntityTransaction t = entityManager.getTransaction();
+		try {
+			t.begin();
+		Query q = entityManager.createQuery("Select t from Team t WHERE t.abv = ?");
+		q.setParameter(0, teamAbbr);
+		Team team = (Team)q.getSingleResult();
+		t.commit();
+		close();
+		return team;
+		}
+		catch (Exception e)
+		{
+			t.rollback();
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+
+	@Override
+	public Team getTeamByName(String teamName) {
+		EntityTransaction t = entityManager.getTransaction();
+		t.begin();
+		try {
+		Query q = entityManager.createQuery("Select t from Team t WHERE t.name = ?");
+		q.setParameter(0, teamName);
+		Team team = (Team)q.getSingleResult();
+		t.commit();
+		return team;
+		}
+		catch (Exception e)
+		{
+			t.rollback();
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public ArrayList<Team> getAllTeams() {
+		EntityTransaction t = entityManager.getTransaction();
+		t.begin();
+	    List<Team> allTeams = new ArrayList<>();
+		try
+		{
+			Query q = entityManager.createQuery("FROM team",Team.class);
+			allTeams = q.getResultList();
+			t.commit();
+			return (ArrayList<Team>) allTeams;
+		}
+		catch (Exception e)
+		{
+			t.rollback();
+			return null;
+		}
+		
+	}
+
+	@Override
+	public void close() throws Exception {
+		entityManager.close();
+		factory.close();	
+	
+	}
+
+}

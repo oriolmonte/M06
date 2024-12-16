@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="Team provaInsert = new Team(&quot;ttt&quot;,&quot;Test&quot;,&quot;Test&quot;);"/>
+		<list key="findhistory">
+			<item value="Team provaInsert = new Team(&quot;ttt&quot;,&quot;Test&quot;,&quot;Test&quot;);"/>
+			<item value="ResultSet result2 = doExercici2(con,30000);"/>
+			<item value="&#x09;&#x09;doExercici1(con,&quot;9999&quot;, &quot;10995&quot;);"/>
+			<item value="DELIMITER $$"/>
+		</list>
+	</section>
+</section>

@@ -1,0 +1,25 @@
+package dao;
+
+import javax.persistence.*;
+
+import model.Team;
+
+public class Main {
+
+	public static void main(String[] args) throws Exception {
+		
+		TeamDaoFactory factory = new TeamDaoFactory();
+		DaoManager dao = factory.CreateTeamDAO();
+		dao.DeleteTeam("ttt");
+		dao.close();
+		Team provaInsert = new Team("ttt","Test","Test");
+		if(dao.AddTeam(provaInsert))
+			System.out.print("OK");
+		
+		
+		
+		
+		
+	}
+
+}

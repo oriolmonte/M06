@@ -1,0 +1,41 @@
+package frontend;
+
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import dao.*;
+import model.*;
+
+public class ConsoleTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		TeamDAOFactory factory = new TeamDAOFactory();
+		DaoManager dao = factory.CreateTeamDAO();
+		Team t = new Team("PPP","PPP","PPP");
+		dao.AddTeam(t);
+		String dateString ="2022-08-05";
+		System.out.println(dao.GetTeamAbv("Arsenal"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+        try {
+			java.util.Date date = formatter.parse(dateString);
+			java.sql.Date dateSQL = new java.sql.Date(date.getTime());
+			System.out.println(dao.GetMatch(dateSQL, dao.GetTeam("CRY"), dao.GetTeam("ARS")));
+		}
+        catch (ParseException e) {
+			e.printStackTrace();
+		}
+        System.out.println(dao.GoalsOfTeam(dao.GetTeam("ARS")));
+        System.out.println(dao.AwayGoals());
+        List<Match> matches = dao.MatchesOfTeam(dao.GetTeam("ARS"));
+        for(Match m : matches)
+        {
+        	System.out.println(m);
+        }
+        System.out.println(dao.RedCards(dao.GetTeam("CRY")));
+        System.out.println(dao.TopScorer());
+        
+	}
+}

@@ -1,0 +1,22 @@
+package jdbchandout;
+
+import java.sql.*;
+import model.Doctor;
+
+
+public class jbdc {
+	public static void main (String[] args) throws SQLException
+	{
+		Doctor drRandom = new Doctor(5,66,"D. Hola");
+		System.out.print(drRandom);
+		//1.Statements
+		//2.Prepared statements
+		//3.ExecuteBatch i AddBatch
+		//4.Crear procediment emmagatzemat UN SOL VALOR 
+		//5.Crear procediment emmagatzemat UN CURSOR
+		//6.Funcio transaccional 
+		
+	}
+	
+	
+}

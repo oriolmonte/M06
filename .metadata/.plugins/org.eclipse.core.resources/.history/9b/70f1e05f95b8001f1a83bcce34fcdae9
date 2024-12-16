@@ -1,0 +1,17 @@
+package dao;
+
+import javax.persistence.*;
+
+import model.Team;
+
+public class Main {
+
+	public static void main(String[] args) {
+		
+		TeamDaoFactory factory = new TeamDaoFactory();
+		DaoManager dao = factory.CreateTeamDAO();
+		
+		dao.AddTeam(new Team("TTT","TTT",""));		
+	}
+
+}

@@ -1,0 +1,177 @@
+package dao;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+import model.Match;
+import model.Team;
+
+public class TeamDaoJDBCImpl implements DaoManager{
+
+	static String connectionUrl = "jdbc:mysql://localhost:3306/premier?serverTimezone=UTC";
+
+	public TeamDaoJDBCImpl() throws SQLException
+	{
+	}
+	
+	public boolean AddTeam(Team team) {
+		String sSql = "{call ADDTEAM(?,?,?)}";
+		try(	
+				Connection con = DriverManager.getConnection(connectionUrl, "admin", "12345");
+				CallableStatement cS = con.prepareCall(sSql);
+				
+		)
+		{
+			//NAME ABV LOGO
+			cS.setString(1,team.getName());
+			cS.setString(2,team.getAbv());
+			cS.setString(3,team.getLogo_link());
+
+			return cS.execute();
+
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+
+	public Team GetTeam(String abreviacio) {
+		String sSql = "{call GETTEAM(?)}";
+		try(
+				Connection con = DriverManager.getConnection(connectionUrl, "admin", "12345");
+				CallableStatement cS = con.prepareCall(sSql);
+				
+			)
+		{
+			Team result = null;
+			cS.setString(1,abreviacio);
+			boolean hasResults = cS.execute();
+			
+			if(hasResults)
+			{
+				ResultSet rS = cS.getResultSet();
+				result = new Team(rS.getString("abv"),rS.getString("club_name"),rS.getString("logo_link"));
+			}
+			return result;		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String GetTeamAbv(String teamName) {
+		String sSql = "{call GETAVB(?)}";
+		try(				
+				Connection con = DriverManager.getConnection(connectionUrl, "admin", "12345");
+				CallableStatement cS = con.prepareCall(sSql);
+				
+)
+		{
+
+			String result = "";
+			
+			cS.setString(1,teamName);
+			boolean hasResults = cS.execute();
+			if(hasResults)
+			{
+				ResultSet rS = cS.getResultSet();
+				result = rS.getString(1);
+			}
+			return result;		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Match GetMatch(java.sql.Date matchDate, Team home, Team away) {
+		String sSql = "{call GETMATCH(?,?,?)}";
+
+		try(
+				Connection con = DriverManager.getConnection(connectionUrl, "admin", "12345");
+				CallableStatement cS = con.prepareCall(sSql);		
+		)
+		{
+
+			Match result = null;
+			
+			cS.setDate(1, matchDate );
+			cS.setString(2, home.getAbv());
+			cS.setString(3, away.getAbv());
+			boolean hasResults = cS.execute();
+			if(hasResults)
+			{
+				ResultSet rS = cS.getResultSet();
+				result = new Match(rS.getDate("datee"),rS.getString("hometeam_abv"),
+						rS.getString("awayteam_abv"), rS.getInt("FTHG"), rS.getInt("FTAG"),
+						rS.getInt("HR"), rS.getInt("AR"), rS.getString("REFEREE"));				
+			}
+			return result;		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public int GoalsOfTeam(Team t) {
+		String sSql = "{call GETGOALS(?)}";
+
+		try(
+				Connection con = DriverManager.getConnection(connectionUrl, "admin", "12345");
+				CallableStatement cS = con.prepareCall(sSql);		
+		)
+		{
+			int result = 0;
+			String sSql = "{call GETGOALS(?)}";
+			
+			cS.setString(1,t.getAbv());
+			boolean hasResults = cS.execute();
+			if(hasResults)
+			{
+				ResultSet rS = cS.getResultSet();
+				result = rS.getInt(1);
+			}
+			return result;		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public int AwayGoals() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public List<Match> MatchesOfTeam(Team t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int RedCards(Team t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public Team TopScorer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
