@@ -1,6 +1,7 @@
 package dao;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Player;
 import model.Team;
@@ -14,4 +15,7 @@ public interface DaoManager extends AutoCloseable {
 	public ArrayList<Team> getAllTeams();
 	public boolean AddPlayer(Player onePlayer);
 	public int importPlayers(String playersFileName);
+	public List<Player> GetTeamMembers(String teamAbv);
+	public boolean AddTeam(Team oneTeam, List<Player> plantilla);
+	
 }

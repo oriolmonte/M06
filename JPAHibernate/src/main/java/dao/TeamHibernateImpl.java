@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import model.Player;
 import model.Team;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class TeamHibernateImpl implements DaoManager {
 
 	EntityManagerFactory factory = Persistence.createEntityManagerFactory("ORMTeam");
@@ -37,7 +38,6 @@ public class TeamHibernateImpl implements DaoManager {
 	}
 
 	@Override
-        @SuppressWarnings("CallToPrintStackTrace")
 	public boolean DeleteTeam(String teamAbbr) {
 		EntityTransaction t = entityManager.getTransaction();
 		
@@ -186,6 +186,19 @@ public class TeamHibernateImpl implements DaoManager {
 		}
     }
 
+    @Override
+    public List<Player> GetTeamMembers(String teamAbv) {
+
+		Team team = getTeamByAbbr(teamAbv);
+		return team.getPlayerList();
+    }
+
+    @Override
+    public boolean AddTeam(Team oneTeam, List<Player> plantilla) {		
+		oneTeam.setPlayerList(plantilla);
+		plantilla.forEach(player -> AddPlayer(player));
+		return AddTeam(oneTeam);
+	}
 
 	@Override
 	public void close() throws Exception {
@@ -193,6 +206,8 @@ public class TeamHibernateImpl implements DaoManager {
 		factory.close();	
 	
 	}
+
+
 
    
    
